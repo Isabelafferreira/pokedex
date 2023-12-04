@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
+import Modal from '../Modal/Modal';
 
-import './Pokedex.css'
+import './Pokedex.scss'
 
 function Pokedex() {
   const [searchTerm, setSearchTerm] = useState('');
   const [pokemonData, setPokemonData] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [showModal, setShowModal] = useState(false);
 
   const searchPokemon = async () => {
     const input = searchTerm.toLowerCase();
@@ -18,6 +20,7 @@ function Pokedex() {
 
       if (response.data) {
         setPokemonData(response.data);
+        setShowModal(true)
         setErrorMessage('');
       }
 
@@ -33,27 +36,33 @@ function Pokedex() {
     }
   };
 
-  return (
-    <div>
-      <input
-        type="text"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        placeholder="Digite o nome do Pokémon"
-      />
-      <button onClick={searchPokemon}>Buscar</button>
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      searchPokemon();
+    }
+  };
 
-      {pokemonData && (
-        <div>
-          <img src={pokemonData.sprites.front_default} alt={pokemonData.name} />
-          <h2>{pokemonData.name}</h2>
-          <div>
-            <p>Type 1</p>
-            <p>Type 2</p>
-          </div>
-          <p>Peso: {pokemonData.weight}</p>
-          <p>Altura: {pokemonData.height}</p>
-        </div>
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
+  return (
+    <div data-fs-home-container>
+      <h1>Pokédex</h1>
+      <div data-fs-search-container>
+        <input
+          data-fs-input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Digite o nome do Pokémon"
+          onKeyDown={handleKeyPress}
+        />
+        <button data-fs-button onClick={searchPokemon} id='search'>Buscar</button>
+      </div>
+
+      {showModal && (
+        <Modal pokemonData={pokemonData} closeModal={closeModal} />
       )}
 
       {errorMessage && <p>{errorMessage}</p>}
