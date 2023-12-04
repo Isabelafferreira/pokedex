@@ -14,6 +14,7 @@ function Pokedex() {
 
     try {
       const response = await axios.get(url);
+      console.log(response)
 
       if (response.data) {
         setPokemonData(response.data);
@@ -46,6 +47,10 @@ function Pokedex() {
         <div>
           <img src={pokemonData.sprites.front_default} alt={pokemonData.name} />
           <h2>{pokemonData.name}</h2>
+          <div>
+            <p>Type 1</p>
+            <p>Type 2</p>
+          </div>
           <p>Peso: {pokemonData.weight}</p>
           <p>Altura: {pokemonData.height}</p>
         </div>
